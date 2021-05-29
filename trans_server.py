@@ -35,6 +35,15 @@ class MachineNotFound(Exception):
 
 # Methods to expose to the clients
 class MachineServer(RpcMethodsBase):
+    async def get_saved_machine(self, name: str):
+        cur = col.find({'Name': name})
+        curs = [c['bin-data'] for c in cur]
+        # res = next(cur)['bin-data']
+        if curs:
+            return pickle.loads(curs[0])
+        else:
+            return None
+
     async def reset_or_create_machine(self, name: str):
         try:
             cur = col.find({'Name': name})

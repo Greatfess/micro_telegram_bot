@@ -10,8 +10,7 @@ import ast
 
 logging.basicConfig(level=logging.INFO)
 
-TOKEN = os.getenv('TELETOKEN',
-                  '1780950638:AAG0KgQ2wVgjicMG5RQjq6lZ5d4hDsfGQZk')
+TOKEN = os.getenv('TELETOKEN')
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
@@ -75,7 +74,7 @@ async def process_callback_confirmation(callback_query: types.CallbackQuery):
         await client.other.update_state(name=id, phrase=callback_query.data)
         if callback_query.data == 'accept':
             await bot.send_message(id, "Заказ подтвержден")
-        if callback_query.data == 'reset':
+        else:
             await bot.send_message(id, "Заказ отменен")
         await client.other.reset_state(name=id)
     else:
