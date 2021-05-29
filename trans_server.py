@@ -35,7 +35,7 @@ class MachineNotFound(Exception):
 
 # Methods to expose to the clients
 class MachineServer(RpcMethodsBase):
-    async def find_or_create_machine(self, name: str):
+    async def reset_or_create_machine(self, name: str):
         try:
             cur = col.find({'Name': name})
             res = next(cur)['bin-data']
