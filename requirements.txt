@@ -1,0 +1,5 @@
+aiogram==2.13
+fastapi_websocket_rpc==0.1.19
+transitions==0.8.8
+montydb==2.1.1
+pymongo==3.11.4
