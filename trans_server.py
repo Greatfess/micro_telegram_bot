@@ -1,8 +1,5 @@
 import os
-
 os.environ["MONTY_ENABLE_BSON"] = "1"
-print('MONTY_ENABLE_BSON', os.getenv('MONTY_ENABLE_BSON'))
-
 import uvicorn
 import asyncio
 from fastapi import FastAPI
@@ -11,6 +8,7 @@ import pickle
 from bson.binary import Binary
 from trans_model import states, transitions, async_nested
 from montydb import MontyClient
+
 
 client = MontyClient(":memory:")
 col = client.db.test
@@ -127,6 +125,6 @@ endpoint = WebsocketRPCEndpoint(MachineServer())
 # add the endpoint to the app
 endpoint.register_route(app, "/ws")
 
-# Start the server itself
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=9000)

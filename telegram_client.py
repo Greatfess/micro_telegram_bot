@@ -9,7 +9,6 @@ import logging
 import ast
 
 logging.basicConfig(level=logging.INFO)
-
 TOKEN = os.getenv('TELETOKEN')
 
 bot = Bot(token=TOKEN)
@@ -17,8 +16,6 @@ dp = Dispatcher(bot)
 
 URL = "ws://localhost:9000/ws"
 client = WebSocketRpcClient(URL, RpcMethodsBase())
-async def start():
-    await client.__aenter__()
 
 
 @dp.message_handler(commands=['start'])
@@ -80,6 +77,10 @@ async def process_callback_confirmation(callback_query: types.CallbackQuery):
     else:
         await bot.send_message(id, f"Пожалуйста, начните с команды: /start")
     await bot.answer_callback_query(callback_query.id)
+
+
+async def start():
+    await client.__aenter__()
 
 
 async def shutdown(dispatcher: Dispatcher):
