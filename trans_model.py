@@ -6,10 +6,10 @@ async_nested = MachineFactory.get_predefined(asyncio=True, nested=True)
 NestedState.separator = '↦'
 
 states_eng = ['undefined',
-          {'name': 'small', 'children': ['cash', 'card']},
-          {'name': 'big', 'children': ['cash', 'card']},
-          'confirmed'
-          ]
+              {'name': 'small', 'children': ['cash', 'card']},
+              {'name': 'big', 'children': ['cash', 'card']},
+              'confirmed'
+              ]
 
 transitions_eng = [
     ['reset', '*', 'undefined'],

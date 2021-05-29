@@ -1,8 +1,5 @@
 import os
-
 os.environ["MONTY_ENABLE_BSON"] = "1"
-print('MONTY_ENABLE_BSON', os.getenv('MONTY_ENABLE_BSON'))
-
 import uvicorn
 import asyncio
 from fastapi import FastAPI
@@ -11,6 +8,7 @@ import pickle
 from bson.binary import Binary
 from trans_model import states, transitions, async_nested
 from montydb import MontyClient
+
 
 client = MontyClient(":memory:")
 col = client.db.test
@@ -35,7 +33,16 @@ class MachineNotFound(Exception):
 
 # Methods to expose to the clients
 class MachineServer(RpcMethodsBase):
-    async def find_or_create_machine(self, name: str):
+    async def get_saved_machine(self, name: str):
+        cur = col.find({'Name': name})
+        curs = [c['bin-data'] for c in cur]
+        # res = next(cur)['bin-data']
+        if curs:
+            return pickle.loads(curs[0])
+        else:
+            return None
+
+    async def reset_or_create_machine(self, name: str):
         try:
             cur = col.find({'Name': name})
             res = next(cur)['bin-data']
@@ -118,6 +125,6 @@ endpoint = WebsocketRPCEndpoint(MachineServer())
 # add the endpoint to the app
 endpoint.register_route(app, "/ws")
 
-# Start the server itself
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=9000)
