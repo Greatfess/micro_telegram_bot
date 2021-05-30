@@ -16,7 +16,7 @@ TOKEN = os.getenv('TELETOKEN')
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
-PORT = os.getenv('PORT')
+PORT = os.getenv('PORT', 9000)
 URL = f"ws://localhost:{PORT}/ws"
 client = WebSocketRpcClient(URL, RpcMethodsBase())
 

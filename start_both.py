@@ -28,9 +28,7 @@ class Server(uvicorn.Server):
 
 
 def start():
-    PORT = os.getenv('$PORT')
-    print(PORT)
-    print('another port', os.getenv('PORT'))
+    PORT = os.getenv('PORT', 9000)
     config = Config(app, host="0.0.0.0", port=PORT, log_level="info")
     server = Server(config=config)
 

@@ -99,7 +99,7 @@ endpoint.register_route(app, "/ws")
 
 
 def start_server(host="0.0.0.0", port=None):
-    port = os.getenv('$PORT') if port is not None else port
+    port = os.getenv('PORT') if port is not None else port
     uvicorn.run(app, host=host, port=port)
 
 
