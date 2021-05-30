@@ -1,5 +1,5 @@
-from transitions.extensions.nesting import NestedState
 from transitions.extensions import MachineFactory
+from transitions.extensions.nesting import NestedState
 
 # create a machine with mixins
 async_nested = MachineFactory.get_predefined(asyncio=True, nested=True)

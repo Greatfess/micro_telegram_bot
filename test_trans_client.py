@@ -1,6 +1,5 @@
-import asyncio
-from fastapi_websocket_rpc import RpcMethodsBase, WebSocketRpcClient
 import pytest
+from fastapi_websocket_rpc import RpcMethodsBase, WebSocketRpcClient
 
 
 @pytest.mark.asyncio
