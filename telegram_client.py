@@ -16,7 +16,8 @@ TOKEN = os.getenv('TELETOKEN')
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
-URL = "ws://localhost:9000/ws"
+PORT = os.getenv('PORT')
+URL = f"ws://localhost:{PORT}/ws"
 client = WebSocketRpcClient(URL, RpcMethodsBase())
 
 
@@ -99,6 +100,7 @@ def start_teleclient():
 
     # start bot
     executor.start_polling(dp, on_shutdown=shutdown)
+
 
 if __name__ == '__main__':
     start_teleclient()

@@ -1,1 +1,1 @@
-bot: python start_both.py
+web: python start_both.py

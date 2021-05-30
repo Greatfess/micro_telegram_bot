@@ -51,7 +51,7 @@ heroku config:set --app YourAppId MONTY_ENABLE_BSON='1'
 ```
 - Create a Procfile in the root of the bot with the following content:
 ```
-bot: python telebot_run.py
+web: python telebot_run.py 
 ```
 - Use git to deploy/redeploy:
 ```

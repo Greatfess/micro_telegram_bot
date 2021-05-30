@@ -98,7 +98,8 @@ endpoint = WebsocketRPCEndpoint(MachineServer())
 endpoint.register_route(app, "/ws")
 
 
-def start_server(host="0.0.0.0", port=9000):
+def start_server(host="0.0.0.0", port=None):
+    port = os.getenv('PORT') if port is not None else port
     uvicorn.run(app, host=host, port=port)
 
 
