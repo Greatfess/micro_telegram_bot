@@ -1,12 +1,14 @@
+import ast
 import asyncio
+import logging
+import os
+
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
-import os
-import keyboards as kb
 from fastapi_websocket_rpc import RpcMethodsBase, WebSocketRpcClient
-import logging
-import ast
+
+import keyboards as kb
 
 logging.basicConfig(level=logging.INFO)
 TOKEN = os.getenv('TELETOKEN')
@@ -73,7 +75,7 @@ async def process_callback_confirmation(callback_query: types.CallbackQuery):
             await bot.send_message(id, "Заказ подтвержден")
         else:
             await bot.send_message(id, "Заказ отменен")
-        await client.other.reset_state(name=id)
+        await client.other.reset_or_create_machine(name=id)
     else:
         await bot.send_message(id, f"Пожалуйста, начните с команды: /start")
     await bot.answer_callback_query(callback_query.id)

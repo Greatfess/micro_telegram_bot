@@ -1,10 +1,12 @@
-from trans_server import app
-from telegram_client import start_teleclient
-from threading import Thread
-import uvicorn
 import contextlib
 import time
+from threading import Thread
+
+import uvicorn
 from uvicorn.config import Config
+
+from telegram_client import start_teleclient
+from trans_server import app
 
 
 class Server(uvicorn.Server):
@@ -24,9 +26,13 @@ class Server(uvicorn.Server):
             thread.join()
 
 
-if __name__ == '__main__':
+def start():
     config = Config(app, host="0.0.0.0", port=9000, log_level="info")
     server = Server(config=config)
 
     with server.run_in_thread():
         start_teleclient()
+
+
+if __name__ == '__main__':
+    start()
