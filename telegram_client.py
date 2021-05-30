@@ -89,9 +89,14 @@ async def shutdown(dispatcher: Dispatcher):
     await dispatcher.storage.wait_closed()
 
 
-if __name__ == '__main__':
+def start_teleclient():
+    # connect to the db
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     result = loop.run_until_complete(start())
 
+    # start bot
     executor.start_polling(dp, on_shutdown=shutdown)
+
+if __name__ == '__main__':
+    start_teleclient()

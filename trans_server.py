@@ -13,6 +13,9 @@ from montydb import MontyClient
 client = MontyClient(":memory:")
 col = client.db.test
 
+# Init the FAST-API app
+app = FastAPI()
+
 
 class MachineNotFound(Exception):
     """Exception raised for errors when Machine is not in database.
@@ -51,23 +54,36 @@ class MachineServer(RpcMethodsBase):
             col.update_one({'Name': name},
                            {"$set": {'bin-data': Binary(thebytes)}})
         except StopIteration:
+            print('StopIteration')
             # if there are no saved machines in db, then create one
             machine = async_nested(states=states,
                                    transitions=transitions,
                                    initial='undefined',
                                    ignore_invalid_triggers=True)
+            print('1')
             thebytes = pickle.dumps(machine)
+            print('2')
             col.insert_one({'Name': name, 'bin-data': Binary(thebytes)})
+            print('3')
         return machine.state
 
     async def remove_machine(self, name: str):
-        machine = await self.get_saved_machine(name)
+        try:
+            machine = await self.get_saved_machine(name)
+        except MachineNotFound:
+            await self.reset_or_create_machine(name)
+            machine = await self.get_saved_machine(name)
         col.insert_one({'Hist-name': name, 'state': machine.state})
         col.delete_one({'Name': name})
         return f'Machine {name} has removed'
 
     async def update_state(self, name: str, phrase: str):
-        machine = await self.get_saved_machine(name)
+        try:
+            machine = await self.get_saved_machine(name)
+        except MachineNotFound:
+            print('MachineNotFound')
+            await self.reset_or_create_machine(name)
+            machine = await self.get_saved_machine(name)
         if phrase == 'accept':
             # save the order to db
             col.insert_one({'Hist-name': name, 'state': machine.state})
@@ -78,11 +94,19 @@ class MachineServer(RpcMethodsBase):
         return machine.state
 
     async def get_state(self, name: str):
-        machine = await self.get_saved_machine(name)
+        try:
+            machine = await self.get_saved_machine(name)
+        except MachineNotFound:
+            await self.reset_or_create_machine(name)
+            machine = await self.get_saved_machine(name)
         return machine.state
 
     async def reset_state(self, name: str):
-        machine = await self.get_saved_machine(name)
+        try:
+            machine = await self.get_saved_machine(name)
+        except MachineNotFound:
+            await self.reset_or_create_machine(name)
+            machine = await self.get_saved_machine(name)
         await machine.reset()
         thebytes = pickle.dumps(machine)
         col.update_one({'Name': name},
@@ -94,13 +118,13 @@ class MachineServer(RpcMethodsBase):
         return [doc['state'] for doc in cur]
 
 
+# Create an endpoint and load it with the methods to expose
+endpoint = WebsocketRPCEndpoint(MachineServer())
+# add the endpoint to the app
+endpoint.register_route(app, "/ws")
+
+
 def start_server(host="0.0.0.0", port=9000):
-    # Init the FAST-API app
-    app = FastAPI()
-    # Create an endpoint and load it with the methods to expose
-    endpoint = WebsocketRPCEndpoint(MachineServer())
-    # add the endpoint to the app
-    endpoint.register_route(app, "/ws")
     uvicorn.run(app, host=host, port=port)
 
 
