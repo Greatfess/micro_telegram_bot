@@ -58,5 +58,6 @@ web: python telebot_run.py
 git add .
 git commit -m 'commit message'
 git push heroku master
+heroku ps:scale web=1
 ```
 Note: you can run telegram_client.py and trans_server.py separately on different heroku apps, but dont forget to add right address in telegram_client.py
