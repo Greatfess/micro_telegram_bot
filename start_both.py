@@ -1,6 +1,7 @@
 import contextlib
 import time
 from threading import Thread
+import os
 
 import uvicorn
 from uvicorn.config import Config
@@ -27,7 +28,10 @@ class Server(uvicorn.Server):
 
 
 def start():
-    config = Config(app, host="0.0.0.0", port=9000, log_level="info")
+    PORT = os.getenv('$PORT')
+    print(PORT)
+    print('another port', os.getenv('PORT'))
+    config = Config(app, host="0.0.0.0", port=PORT, log_level="info")
     server = Server(config=config)
 
     with server.run_in_thread():
